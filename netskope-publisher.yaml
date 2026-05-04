@@ -42,6 +42,30 @@ Parameters:
   PublisherUpgrade:
     Type: String
     Description: "Publisher upgrade profile"
+
+  CleanupSensitiveLogs:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Remove sensitive artifacts after successful registration"
+
+  EnableAnyApp:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Enable Browser Access AnyApp after successful registration"
+
+  UpgradePublisherAfterRegister:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Apply system updates and upgrade publisher image after successful registration"
   
   InstanceCount:
     Type: Number
@@ -98,7 +122,7 @@ Resources:
     Properties:
       LaunchTemplateName: !Sub ${InstanceName}-launch-template
       LaunchTemplateData:
-        ImageId: ami-06d48250a66f3d72f
+        ImageId: ami-0aa82d42e87d9750c
         InstanceType: !Ref InstanceType
         KeyName: !Ref KeyPairName
         IamInstanceProfile:
@@ -129,7 +153,11 @@ Resources:
             hostnamectl set-hostname "$HOSTNAME"
             
             # Update /etc/hosts to prevent sudo warnings
-            echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
+            if grep -q '^127\.0\.1\.1[[:space:]]' /etc/hosts; then
+              sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
+            else
+              echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
+            fi
 
             # Download the deployment script from S3
             aws s3 cp s3://ztnatemplate/nsk-deployment.sh /usr/local/bin/run-publisher-setup.sh
@@ -140,6 +168,9 @@ Resources:
             sed -i "s/##API_TOKEN##/${ApiToken}/g" /usr/local/bin/run-publisher-setup.sh
             sed -i "s/##PUB_TAG##/${PublisherTag}/g" /usr/local/bin/run-publisher-setup.sh
             sed -i "s/##PUB_UPGRADE##/${PublisherUpgrade}/g" /usr/local/bin/run-publisher-setup.sh
+            sed -i "s/##CLEANUP_SENSITIVE_LOGS##/${CleanupSensitiveLogs}/g" /usr/local/bin/run-publisher-setup.sh
+            sed -i "s/##ENABLE_ANYAPP##/${EnableAnyApp}/g" /usr/local/bin/run-publisher-setup.sh
+            sed -i "s/##UPGRADE_PUBLISHER_AFTER_REGISTER##/${UpgradePublisherAfterRegister}/g" /usr/local/bin/run-publisher-setup.sh
 
             # Run the setup script in background
             systemd-run --no-block /usr/local/bin/run-publisher-setup.sh
