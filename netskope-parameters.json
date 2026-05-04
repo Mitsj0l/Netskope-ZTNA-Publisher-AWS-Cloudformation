@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "KeyPairName",
-    "ParameterValue": "<your keypair name>"
+    "ParameterValue": "<your-keypair-name>"
   },
   {
     "ParameterKey": "InstanceType",
@@ -13,19 +13,19 @@
   },
   {
     "ParameterKey": "VpcId",
-    "ParameterValue": "<your VPC ID>"
+    "ParameterValue": "<your-vpc-id>"
   },
   {
     "ParameterKey": "SubnetId",
-    "ParameterValue": "<your Subnet ID>"
+    "ParameterValue": "<your-subnet-id>"
   },
   {
     "ParameterKey": "TenantUrl",
-    "ParameterValue": "XXXX.goskope.com"
+    "ParameterValue": "<your-tenant>.goskope.com"
   },
   {
     "ParameterKey": "ApiToken",
-    "ParameterValue": "<your Netskope API Token>"
+    "ParameterValue": "<your-netskope-api-token>"
   },
   {
     "ParameterKey": "PublisherTag",
@@ -36,7 +36,19 @@
     "ParameterValue": "1"
   },
   {
+    "ParameterKey": "CleanupSensitiveLogs",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "EnableAnyApp",
+    "ParameterValue": "true"
+  },
+  {
+    "ParameterKey": "UpgradePublisherAfterRegister",
+    "ParameterValue": "true"
+  },
+  {
     "ParameterKey": "InstanceCount",
-    "ParameterValue": "4"
+    "ParameterValue": "1"
   }
 ]
